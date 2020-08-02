@@ -7,9 +7,12 @@ import {
 } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { AdminRoute, EmployeeRoute } from './routes';
+import { AdminRoute, EmployeesRoute, EmployeeRoutePath, EmployeeFeedbackRoutePath } from './routes';
 import SideBar from './SideBar';
-import Admin from './admin/Admin';
+import AdminView from './admin/AdminView';
+import EmployeesView from './employee/EmployeesView';
+import EmployeeView from './employee/EmployeeView';
+import EmployeeFeedbackView from './employee/EmployeeFeedbackView';
 
 const Root = styled.div`
   display: flex;
@@ -27,11 +30,13 @@ function App() {
         <Content>
           <Switch>
             <Route path={AdminRoute}>
-              <Admin />
+              <AdminView />
             </Route>
-            <Route path={EmployeeRoute}>
-              Employee
+            <Route exact={true} path={EmployeesRoute}>
+              <EmployeesView />
             </Route>
+            <Route exact={true} path={EmployeeRoutePath} component={EmployeeView} />
+            <Route path={EmployeeFeedbackRoutePath} component={EmployeeFeedbackView} />
             <Route exact={true} path="/">
               <Redirect to={AdminRoute} />
             </Route>

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
-import { AdminRoute, EmployeeRoute } from './routes';
+import { AdminRoute, EmployeesRoute } from './routes';
 
 const SideBarTitle = styled.h3`
   text-align: center;
@@ -34,7 +34,7 @@ export default function SideBar() {
             <Button variant="outlined" color="secondary" component={Link} to={AdminRoute}>
                 Admin
             </Button>
-            <Button variant="outlined" color="primary" component={Link} to={EmployeeRoute}>
+            <Button variant="outlined" color="primary" component={Link} to={EmployeesRoute}>
                 Employee
             </Button>
         </Drawer>

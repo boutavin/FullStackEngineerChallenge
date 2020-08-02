@@ -16,6 +16,20 @@ const Debug = styled.pre`
   margin-top: 2rem;
 `;
 
+function EmployeeList({ employees, setEmployeeSettingsProxy }: {
+  employees: Employee[],
+  setEmployeeSettingsProxy: (employee: Employee | undefined) => void
+}) {
+  const items = employees.map((employee) => (
+    <AdminEmployee employee={employee} key={employee.name} setEmployeeSettings={setEmployeeSettingsProxy} />
+  ));
+  return (
+    <Ul>
+      {items}
+    </Ul>
+  );
+}
+
 export default function AdminEmployees() {
   const [employees, setEmployees] = useState(EMPLOYEES);
   const [employeeSettings, setEmployeeSettings] = useState<Employee>();
@@ -25,9 +39,6 @@ export default function AdminEmployees() {
       setEmployeeSettings(employee);
     }, 200);
   };
-  const employeesItems = employees.map((employee) => (
-    <AdminEmployee employee={employee} key={employee.name} setEmployeeSettings={setEmployeeSettingsProxy} />
-  ));
 
   function deleteEmployee(employee: Employee): void {
     // TODO
@@ -55,9 +66,7 @@ export default function AdminEmployees() {
       <Grid container={true} spacing={3}>
         <Grid item={true} xs={4}>
           <form noValidate={true} autoComplete="off">
-            <Ul>
-              {employeesItems}
-            </Ul>
+            <EmployeeList employees={employees} setEmployeeSettingsProxy={setEmployeeSettingsProxy} />
           </form>
 
           <Button

@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
 import AdminEmployeeSettingsProps from './AdminEmployeeSettingsProps';
-import Employee from '../../classes/Employee';
-import { REVIEWS } from '../../constants/constants';
+import { Reviews } from '../../common/Reviews';
 
 const Settings = styled.div`
   margin: 1rem;
@@ -14,15 +13,6 @@ const Settings = styled.div`
   display: flex;
   flex-direction: column;
 `;
-
-function Reviews({ employee }: { employee: Employee }) {
-    const reviews = REVIEWS.filter(review => review.owner.id === employee.id);
-    return (
-        <ul>
-            {reviews.map(review => <li key={review.id}>Review #{review.id}</li>)}
-        </ul>
-    );
-}
 
 export default function AdminEmployeeSettings({ employee, deleteEmployee, setEmployeeSettings }: AdminEmployeeSettingsProps) {
     if (!employee) return null;

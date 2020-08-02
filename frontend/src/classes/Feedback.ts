@@ -1,9 +1,9 @@
 import Employee from './Employee';
 
 export enum FeedBackOption {
-    APPROVED = 'Approved',
-    APPROVED_WITH_SUGGESTIONS = 'Approved with suggestions',
-    REJECTED = 'Rejected',
+    APPROVED = 0,
+    APPROVED_WITH_SUGGESTIONS = 1,
+    REJECTED = 2,
 }
 
 export default class Feedback {
