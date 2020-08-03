@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Button from '@material-ui/core/Button';
-import Employee from '../../classes/Employee';
+import { Button, Grid } from '@material-ui/core';
+
 import AdminEmployee from './AdminEmployee';
 import AdminEmployeeSettings from './AdminEmployeeSettings';
-import { EMPLOYEES } from '../../constants/constants';
-import { Grid } from '@material-ui/core';
+import Api from '../../Api';
+import useEmployees from '../../common/useEmployees';
+import Employee from '../../classes/Employee';
 
 const Ul = styled.ul`
   list-style: none;
@@ -31,8 +32,9 @@ function EmployeeList({ employees, setEmployeeSettingsProxy }: {
 }
 
 export default function AdminEmployees() {
-  const [employees, setEmployees] = useState(EMPLOYEES);
+  const [employees, setEmployees] = useEmployees();
   const [employeeSettings, setEmployeeSettings] = useState<Employee>();
+
   const setEmployeeSettingsProxy = (employee: Employee | undefined) => {
     setEmployeeSettings(undefined);
     setTimeout(() => {
@@ -40,18 +42,24 @@ export default function AdminEmployees() {
     }, 200);
   };
 
-  function deleteEmployee(employee: Employee): void {
-    // TODO
-    /*
-     const result: Employee[] = await API.deleteEmployee(employee)
-    */
-    const newValue = employees.filter(e => e.name !== employee.name);
-    setEmployees(newValue);
+  async function deleteEmployee(employee: Employee) {
+    const { data } = await Api.deleteEmployee(employee.id);
+    if ((data as any).error) return console.log(data);
+    setEmployees(data as Employee[]);
+    setEmployeeSettings(undefined);
   }
 
-  function addEmployee() {
-    const newValue = [...employees, new Employee(employees.length, '')];
-    setEmployees(newValue);
+  async function saveEmployee(id: number, name: string) {
+    const { data } = (id < 0) ?
+      await Api.addEmployee(name) :
+      await Api.updateEmployee(id, name);
+    if ((data as any).error) return console.log(data);
+    setEmployees(data as Employee[]);
+    setEmployeeSettings(undefined); // TODO don't like that...
+  }
+
+  async function addEmployee() {
+    setEmployeeSettingsProxy(new Employee(-1, ''));
   }
 
   // function saveEmployee(employee: Employee): void {
@@ -81,7 +89,7 @@ export default function AdminEmployees() {
           <AdminEmployeeSettings
             employee={employeeSettings}
             deleteEmployee={deleteEmployee}
-            setEmployeeSettings={setEmployeeSettings}
+            saveEmployee={saveEmployee}
           />
         </Grid>
       </Grid>

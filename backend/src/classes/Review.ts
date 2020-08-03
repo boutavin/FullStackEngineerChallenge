@@ -29,17 +29,17 @@ export default class Review {
             owner: this.owner,
             approvers: this.approvers,
             feedbacks: this.feedbacks
-        }
+        };
     }
 
     static fromJSON({ id, owner, approvers, feedbacks }: { id: number, owner: number, approvers: number[], feedbacks: FeedbackJSON[] }) {
         const review = new Review(id, owner);
-        review.setApprovers(approvers)
+        review.setApprovers(approvers);
         feedbacks.forEach(f => {
-            const { id, approver, option } = f
-            const fb = new Feedback(id, approver, option);
-            review.addFeedback(fb)
-        })
-        return review
+            const { id: feedbackId, approver, option } = f;
+            const fb = new Feedback(feedbackId, approver, option);
+            review.addFeedback(fb);
+        });
+        return review;
     }
 }

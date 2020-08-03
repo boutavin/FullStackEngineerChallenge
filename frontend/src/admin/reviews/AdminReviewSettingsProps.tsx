@@ -1,7 +1,9 @@
 import Review from '../../classes/Review';
+import Employee from '../../classes/Employee';
 
 export default interface AdminReviewSettingsProps {
-    review: Review | undefined;
+    review: Review;
+    employees: Employee[];
     deleteReview: (review: Review) => void;
-    setReviewSettings: (review: Review | undefined) => void;
+    saveReview: (id: number, owner: number, approvers: number[]) => void;
 }

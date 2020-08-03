@@ -15,7 +15,7 @@ export default class Employee {
         return {
             id: this.id,
             name: this.name
-        }
+        };
     }
 
     static fromJSON({ id, name }: { id: number, name: string }) {

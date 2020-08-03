@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     RouteChildrenProps,
     Redirect
@@ -6,41 +6,41 @@ import {
 // import styled from 'styled-components';
 
 import { EmployeesRoute, EmployeeRoute } from '../routes';
-import { REVIEWS } from '../constants/constants';
 import { FormControl, Select, MenuItem, Button } from '@material-ui/core';
-import Feedback from '../classes/Feedback';
+import Api, { ErrorResponse } from '../Api';
+import Review from '../classes/Review';
+import { FEEDBACK_OPTIONS_TEXT } from '../common/constants';
 
-const feedbackOptions = [
-    'Approve',
-    'Ápprove with suggestions',
-    'Reject'
-].map((feedback, id) => <MenuItem value={id} key={id}>{feedback}</MenuItem>);
+const feedbackOptions = FEEDBACK_OPTIONS_TEXT.map((feedback, id) => <MenuItem value={id} key={id}>{feedback}</MenuItem>);
 
 export default function EmployeeFeedbackView(props: RouteChildrenProps<{ employeeId: string, reviewId: string }>) {
     const [feedbackValue, setFeedbackValue] = useState<number>(-1);
+    const [review, setReview] = useState<Review>();
+    const hasNoParams = !props || !props.match || !props.match.params;
 
-    if (!props || !props.match || !props.match.params) return <Redirect push={true} to={EmployeesRoute} />;
-    const { employeeId, reviewId } = props && props.match.params;
-    if (!employeeId) return <Redirect push={true} to={EmployeesRoute} />;
+    const { reviewId, employeeId } = props?.match?.params || { employeeId: '', reviewId: '' };
+    useEffect(() => {
+        if (hasNoParams) return;
+        const fetch = async () => {
+            if (!employeeId || !reviewId) return;
+            const { data } = await Api.getReviewForFeedback(parseInt(reviewId, 10), parseInt(employeeId, 10));
+            if ((data as ErrorResponse).error) return console.log(data);
+            setReview(data as Review);
+        };
+        fetch();
+    }, [hasNoParams, employeeId, reviewId]);
+
+    if (hasNoParams) return <Redirect push={true} to={EmployeesRoute} />;
     if (!reviewId) return <Redirect push={true} to={EmployeeRoute.reverse({ id: employeeId }) || EmployeesRoute} />;
-    const review = REVIEWS.find(r => r.id === parseInt(reviewId, 10));
-    if (!review) return <h1>No review found for id: {reviewId}</h1>;
-    const approver = review.approvers.find(a => a.id === parseInt(employeeId, 10));
-    if (!approver) return <h1>Access denied! Employee #{employeeId} is not an approver of Review #{reviewId}</h1>;
+    if (!employeeId) return <Redirect push={true} to={EmployeesRoute} />;
+    if (!review) return null;
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         setFeedbackValue(parseInt(event.target.value as string, 10));
     };
 
-    const onSave = () => {
-        // Create feedback
-        const feedback = new Feedback(approver, feedbackValue);
-        review.addFeedback(feedback);
-        // Remove approver from list
-        const index = review.approvers.findIndex(a => a.id === approver.id);
-        const approvers = [...review.approvers];
-        approvers.splice(index, 1);
-        review.setApprovers(approvers);
+    const onSave = async () => {
+        await Api.addReviewFeedback(parseInt(reviewId, 10), parseInt(employeeId, 10), feedbackValue);
     };
 
     return (

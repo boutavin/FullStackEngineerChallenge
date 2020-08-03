@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 
-import Employee from '../classes/Employee';
-import { REVIEWS } from '../constants/constants';
-import Review from '../classes/Review';
 import { EmployeeFeedbackRoute, EmployeeRoute, EmployeesRoute } from '../routes';
+import useReviews from '../common/useReviews';
+import Employee from '../classes/Employee';
+import Review from '../classes/Review';
 
 
 const Li = styled.li`
@@ -33,7 +33,8 @@ export default function ReviewToApprove({ employee, review }: { employee: Employ
 }
 
 export function ReviewsToApprove({ employee }: { employee: Employee; }) {
-    const reviewsToApprove = REVIEWS.filter(review => review.approvers.find(a => a.id === employee.id));
+    const [reviews] = useReviews();
+    const reviewsToApprove = reviews.filter(review => review.approvers.includes(employee.id));
     return (
         <div>
             <h1>Reviews to approve</h1>

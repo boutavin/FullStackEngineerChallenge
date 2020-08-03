@@ -14,28 +14,23 @@ const Settings = styled.div`
   flex-direction: column;
 `;
 
-export default function AdminEmployeeSettings({ employee, deleteEmployee, setEmployeeSettings }: AdminEmployeeSettingsProps) {
+export default function AdminEmployeeSettings({ employee, deleteEmployee, saveEmployee }: AdminEmployeeSettingsProps) {
+    const [localName, setLocalName] = React.useState<string>(employee?.name || '');
     if (!employee) return null;
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        employee.setName(event.target.value);
+        setLocalName(event.target.value);
     };
     const onDelete = () => {
         deleteEmployee(employee);
-        onSave();
     };
-    const onSave = () => setEmployeeSettings(undefined); // TODO don't like that...
+    const onSave = () => {
+        saveEmployee(employee.id, localName);
+    };
 
-    return (
-        <Settings>
-            <Input
-                required={true}
-                defaultValue={employee.name}
-                onChange={handleChange}
-            />
-
-            <Reviews employee={employee} />
-
+    function DeleteButton() {
+        if (employee && employee.id < 0) return null;
+        return (
             <Button
                 variant="contained"
                 color="secondary"
@@ -43,6 +38,21 @@ export default function AdminEmployeeSettings({ employee, deleteEmployee, setEmp
             >
                 Delete
             </Button>
+        );
+    }
+
+    return (
+        <Settings>
+            <Input
+                required={true}
+                defaultValue={employee.name}
+                placeholder="Name"
+                onChange={handleChange}
+            />
+
+            <Reviews employee={employee} />
+
+            <DeleteButton />
             <Button
                 variant="contained"
                 color="primary"

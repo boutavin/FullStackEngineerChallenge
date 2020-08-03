@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
+import Api from '../Api';
+import Review from '../classes/Review';
 import Employee from '../classes/Employee';
-import { REVIEWS } from '../constants/constants';
 
 export function Reviews({ employee }: { employee: Employee; }) {
-    const reviews = REVIEWS.filter(review => review.owner.id === employee.id);
+    const [reviews, setReviews] = useState<Review[]>([]);
+
+    useEffect(() => {
+        const fetch = async () => {
+            const { data } = await Api.getEmployeeReviews(employee.id);
+            setReviews(data);
+        };
+        fetch();
+    }, [employee.id]);
+    if (employee.id < 0) return null;
     return (
         <div>
             <h1>Reviews</h1>

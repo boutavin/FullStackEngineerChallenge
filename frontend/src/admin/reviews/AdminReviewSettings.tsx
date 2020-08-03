@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import AdminReviewSettingsProps from './AdminReviewSettingsProps';
-import { EMPLOYEES } from '../../constants/constants';
 import { MenuItem, FormControl, Chip } from '@material-ui/core';
-import Employee from '../../classes/Employee';
+import { FEEDBACK_TEXT } from '../../common/constants';
 
 const Settings = styled.div`
   margin: 1rem;
@@ -16,49 +15,77 @@ const Settings = styled.div`
   flex-direction: column;
 `;
 
-export default function AdminReviewSettings({ review, deleteReview, setReviewSettings }: AdminReviewSettingsProps) {
-    const [approvers, setApprovers] = React.useState<Employee[]>([]);
-    useEffect(() => {
-        if (!review) return;
-        setApprovers(review.approvers);
-    }, [review]);
-    if (!review) return null;
+export default function AdminReviewSettings({ review, employees, deleteReview, saveReview }: AdminReviewSettingsProps) {
+    const [localOwner, setLocalOwner] = React.useState<number>(review.owner);
+    const [localApprovers, setLocalApprovers] = React.useState<number[]>(review.approvers || []);
+    const { feedbacks } = review;
 
-    const handleOwnerChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        const owner = EMPLOYEES.find(e => e.id === event.target.value);
-        if (!owner) return;
-        review.setOwner(owner);
+    const handleOwnerChange = async (event: React.ChangeEvent<{ value: unknown }>) => {
+        setLocalOwner(event.target.value as number);
     };
     const handleApproversChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        const [approver] = event.target.value as [Employee, number];
-        setApprovers([approver]);
-        review.setApprovers([approver]);
+        const approvers = event.target.value as number[];
+        setLocalApprovers(approvers);
     };
     const onDelete = () => {
         deleteReview(review);
-        onSave();
     };
-    const onSave = () => setReviewSettings(undefined); // TODO don't like that...
+    const onSave = async () => {
+        saveReview(review.id, localOwner, localApprovers);
+    };
 
-    const employeeOptions = EMPLOYEES.map(employee => <MenuItem value={employee.id} key={employee.id}>{employee.name}</MenuItem>);
-    const approverOptions = EMPLOYEES
-        .filter(e => e.id !== review.owner.id)
+    const employeeOptions = employees.map(employee => <MenuItem value={employee.id} key={employee.id}>{employee.name}</MenuItem>);
+    const approverOptions = employees
+        .filter(e => e.id !== localOwner && !feedbacks.find(f => f.approver === e.id))
         .map(employee => <MenuItem value={employee.id} key={employee.id}>{employee.name}</MenuItem>);
-    const RenderApprover = (selected: unknown) => (
-        <div>
-            {(selected as Employee[]).map((value) => (
-                <Chip key={value.id} label={value.name} />
-            ))}
-        </div>
-    );
+    const RenderApprover = (selected: unknown) => {
+        const approvers = (selected as number[]).map(se => employees.find(e => e.id === se));
+        return (
+            <div>
+                {approvers.map((value) => (
+                    <Chip key={value?.id} label={value?.name} />
+                ))}
+            </div>
+        );
+    };
+
+    function Feedbacks() {
+        if (!feedbacks.length) return null;
+        return (
+            <div>
+                <span>Feedbacks</span>
+                <ul>
+                    {feedbacks.map(feedback => {
+                        const approver = employees.find(e => e.id === feedback.approver);
+                        return (
+                            <li key={feedback.id}>{approver?.name} {FEEDBACK_TEXT[feedback.option]}</li>
+                        );
+                    })}
+                </ul>
+            </div>
+        );
+    }
+
+    function DeleteButton() {
+        if (review.id < 0) return null;
+        return (
+            <Button
+                variant="contained"
+                color="secondary"
+                onClick={onDelete}
+            >
+                Delete
+            </Button>
+        );
+    }
 
     return (
         <Settings>
             <FormControl>
-                <span>Approvers</span>
+                <span>Onwer</span>
                 <Select
                     required={true}
-                    defaultValue={review.owner.id}
+                    defaultValue={localOwner}
                     variant="outlined"
                     onChange={handleOwnerChange}
                 >
@@ -70,7 +97,7 @@ export default function AdminReviewSettings({ review, deleteReview, setReviewSet
                 <span>Approvers</span>
                 <Select
                     multiple={true}
-                    value={approvers}
+                    value={localApprovers}
                     onChange={handleApproversChange}
                     renderValue={RenderApprover}
                 >
@@ -78,13 +105,8 @@ export default function AdminReviewSettings({ review, deleteReview, setReviewSet
                 </Select>
             </FormControl>
 
-            <Button
-                variant="contained"
-                color="secondary"
-                onClick={onDelete}
-            >
-                Delete
-            </Button>
+            <Feedbacks />
+            <DeleteButton />
             <Button
                 variant="contained"
                 color="primary"

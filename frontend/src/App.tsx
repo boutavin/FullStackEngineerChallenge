@@ -36,7 +36,7 @@ function App() {
               <EmployeesView />
             </Route>
             <Route exact={true} path={EmployeeRoutePath} component={EmployeeView} />
-            <Route path={EmployeeFeedbackRoutePath} component={EmployeeFeedbackView} />
+            <Route exact={true} path={EmployeeFeedbackRoutePath} component={EmployeeFeedbackView} />
             <Route exact={true} path="/">
               <Redirect to={AdminRoute} />
             </Route>

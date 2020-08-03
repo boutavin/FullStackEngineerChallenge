@@ -1,5 +1,5 @@
-import Employee from '../../../classes/Employee';
-import Review from '../../../classes/Review';
+import Employee from '../classes/Employee';
+import Review from '../classes/Review';
 
 export const EMPLOYEES: Employee[] = [
     new Employee(0, 'Tanjirou'),

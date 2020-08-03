@@ -1,17 +1,35 @@
-import Employee from './Employee';
-
 export enum FeedBackOption {
     APPROVED = 0,
     APPROVED_WITH_SUGGESTIONS = 1,
     REJECTED = 2,
 }
 
+export interface FeedbackJSON {
+    id: number,
+    approver: number,
+    option: number
+}
+
 export default class Feedback {
-    employee: Employee;
+    id: number;
+    approver: number;
     option: FeedBackOption;
 
-    constructor(employee: Employee, option: FeedBackOption) {
-        this.employee = employee;
+    constructor(id: number, approver: number, option: FeedBackOption) {
+        this.id = id;
+        this.approver = approver;
         this.option = option;
+    }
+
+    toJSON(): FeedbackJSON {
+        return {
+            id: this.id,
+            approver: this.approver,
+            option: this.option
+        }
+    }
+
+    static fromJSON({ id, approver, option }: { id: number, approver: number, option: number }) {
+        return new Feedback(id, approver, option);
     }
 }

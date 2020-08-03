@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 
-import Employee from '../classes/Employee';
 import { EmployeesRoute, EmployeeRoute } from '../routes';
-import { EMPLOYEES } from '../constants/constants';
+import useEmployees from '../common/useEmployees';
+import Employee from '../classes/Employee';
 
 const Ul = styled.ul`
     display: flex;
@@ -35,10 +35,11 @@ function EmployeeList({ employees }: { employees: Employee[] }) {
 }
 
 export default function EmployeesView() {
+    const [employees] = useEmployees();
     return (
         <div>
             <h1>Log as</h1>
-            <EmployeeList employees={EMPLOYEES} />
+            <EmployeeList employees={employees} />
         </div>
     );
 }
