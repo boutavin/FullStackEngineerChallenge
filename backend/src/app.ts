@@ -1,6 +1,5 @@
-import express, { Application, Request, Response } from 'express';
+import express, { Application } from 'express';
 import bodyParser from 'body-parser';
-import dotenv from 'dotenv';
 import EmployeesGetHandler from './api/employee/EmployeesGetHandler';
 import EmployeeGetHandler from './api/employee/EmployeeGetHandler';
 import EmployeePostHandler from './api/employee/EmployeePostHandler';
@@ -13,9 +12,6 @@ import ReviewPatchHandler from './api/review/ReviewPatchHandler';
 import ReviewDeleteHandler from './api/review/ReviewDeleteHandler';
 import ReviewFeedbackGetHandler from './api/feedback/ReviewFeedbackGetHandler';
 import ReviewFeedbackPostHandler from './api/feedback/ReviewFeedbackPostHandler';
-
-// Use dotenv to store environment variables
-dotenv.config();
 
 const app: Application = express();
 
@@ -43,7 +39,8 @@ app.delete('/api/review/:id', ReviewDeleteHandler);
 app.get('/api/review/:id/feedback/:approver', ReviewFeedbackGetHandler);
 app.post('/api/review/feedback', ReviewFeedbackPostHandler);
 
-const PORT = process.env.PORT;
+// Initially used dotenv to store environment variables but overkill for just the port...
+const PORT = 5000;
 app.listen(PORT, () => {
     console.log(`server is running on PORT ${PORT}`);
 });

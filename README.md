@@ -7,25 +7,25 @@ Dummy data is already in the local DB.
 ## Installation
 1. Install dependencies on both backend and frontend
 ```
-    cd .\backend
-    npm i
+cd .\backend
+npm i
 
-    cd .\frontend
-    npm i
+cd .\frontend
+npm i
 ```
 2. Start the server
 ```
-    cd .\backend
-    npm start
+cd .\backend
+npm start
 ```
 3. Start the website
 ```
-    cd .\frontend
-    npm start
+cd .\frontend
+npm start
 ```
-4. Go to http://localhost:3000/
+4. Should open http://localhost:3000/ on your browser
    
-**Browser support: Chrome, Firefox, Edge (async/await is used)**
+**Browser support: Chrome, Firefox, Safari, Edge (async/await is used)**
 
 
 ## Implemented views
@@ -48,7 +48,7 @@ Dummy data is already in the local DB.
 - TypeScript
 
 ## Compromises made because of time concerns
-- No DB... Local server storage used instead.
+- No proper DB... Local server storage used instead.
 - No tests...
 - No error handling on the frontend... Only logs...
 - Common classes (Employee, Feedback and Review) are duplicated in both backend and frontend... Should be moved to a local repository to share the code.
