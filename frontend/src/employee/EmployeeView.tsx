@@ -3,7 +3,6 @@ import {
     RouteChildrenProps,
     Redirect
 } from 'react-router-dom';
-// import styled from 'styled-components';
 
 import { EmployeesRoute } from '../routes';
 import { Reviews } from '../common/Reviews';

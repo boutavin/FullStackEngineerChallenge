@@ -7,16 +7,17 @@ export const EMPLOYEES: Employee[] = [
     new Employee(2, 'Zenitsu')
 ];
 
-const r = new Review(5555, 1);
-r.setApprovers([0, 2]);
-
+const review1 = new Review(0, 1);
+review1.setApprovers([0, 2]);
+const review2 = new Review(1, 1);
+review2.setApprovers([2]);
+const review3 = new Review(2, 2);
+review3.setApprovers([0, 1]);
 
 export const REVIEWS: Review[] = [
-    r,
-    new Review(0, 1),
-    new Review(1, 2),
-    new Review(2, 1),
-    new Review(3, 0),
-    new Review(4, 0),
-    new Review(5, 2)
+    review1,
+    review2,
+    review3,
+    new Review(3, 1),
+    new Review(4, 0)
 ];

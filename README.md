@@ -1,11 +1,34 @@
 # Full Stack Developer Challenge
-This is an interview challengs. Please feel free to fork. Pull Requests will be ignored.
 
-## Requirements
-Design a web application that allows employees to submit feedback toward each other's performance review.
+All operations on the local DB are made on the server side.\
+Restart the server to reset the data.\
+Dummy data is already in the local DB.
 
-*Partial solutions are acceptable.*  It is not necessary to submit a complete solution that implements every requirement.
+## Installation
+1. Install dependencies on both backend and frontend
+```
+    cd .\backend
+    npm i
 
+    cd .\frontend
+    npm i
+```
+2. Start the server
+```
+    cd .\backend
+    npm start
+```
+3. Start the website
+```
+    cd .\frontend
+    npm start
+```
+4. Go to http://localhost:3000/
+   
+**Browser support: Chrome, Firefox, Edge (async/await is used)**
+
+
+## Implemented views
 ### Admin view
 * Add/remove/update/view employees
 * Add/update/view performance reviews
@@ -15,24 +38,21 @@ Design a web application that allows employees to submit feedback toward each ot
 * List of performance reviews requiring feedback
 * Submit feedback
 
-## Challenge Scope
-* High level description of design and technologies used
-* Server side API (using a programming language and/or framework of your choice)
-  * Implementation of at least 3 API calls
-  * Most full stack web developers at PayPay currently use Java, Ruby on Rails, or Node.js on the server(with MySQL for the database), but feel free to use other tech if you prefer
-* Web app
-  * Implementation of 2-5 web pages using a modern web framework (e.g. React or Angular) that talks to server side
-    * This should integrate with your API, but it's fine to use static responses for some of it 
-* Document all assumptions made
-* Complete solutions aren't required, but what you do submit needs to run.
+## Technologies used
+### Frontend
+- ReactJS
+- TypeScript
 
-## How to complete this challenge
-* Fork this repo in github
-* Complete the design and code as defined to the best of your abilities
-* Place notes in your code to help with clarity where appropriate. Make it readable enough to present to the PayPay interview team
-* Complete your work in your own github repo and send the results to us and/or present them during your interview
+### Backend
+- NodeJS
+- TypeScript
 
-## What are we looking for? What does this prove?
-* Assumptions you make given limited requirements
-* Technology and design choices
-* Identify areas of your strengths
+## Compromises made because of time concerns
+- No DB... Local server storage used instead.
+- No tests...
+- No error handling on the frontend... Only logs...
+- Common classes (Employee, Feedback and Review) are duplicated in both backend and frontend... Should be moved to a local repository to share the code.
+- No responsive layout... Please view the website on a desktop and in fullsize...
+- Backend & frontend servers run in the developement mode... Should use proper production server to run on the build file.
+
+

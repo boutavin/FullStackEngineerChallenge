@@ -2,13 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Drawer from '@material-ui/core/Drawer';
+import { Button, Drawer } from '@material-ui/core';
 import { AdminRoute, EmployeesRoute } from './routes';
 
 const SideBarTitle = styled.h3`
   text-align: center;
 `;
+
 const drawerWidth = '400px';
 const useStyles = makeStyles((theme) => ({
     drawer: {
@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme) => ({
     },
     drawerPaper: {
         width: drawerWidth,
+        backgroundColor: '#ff9800',
+        boxSizing: 'border-box',
+        padding: '1rem'
     }
 }));
 
@@ -31,10 +34,21 @@ export default function SideBar() {
             anchor="left"
         >
             <SideBarTitle>Full Stack Developer Challenge</SideBarTitle>
-            <Button variant="outlined" color="secondary" component={Link} to={AdminRoute}>
+            <Button
+                variant="contained"
+                color="secondary"
+                component={Link}
+                to={AdminRoute}
+                style={{ marginBottom: '1rem' }}
+            >
                 Admin
             </Button>
-            <Button variant="outlined" color="primary" component={Link} to={EmployeesRoute}>
+            <Button
+                variant="contained"
+                color="primary"
+                component={Link}
+                to={EmployeesRoute}
+            >
                 Employee
             </Button>
         </Drawer>

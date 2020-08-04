@@ -8,6 +8,7 @@ export default function ReviewFeedbackGetHandler(req: Request<{ id: 'id', approv
     if (isNaN(reviewId) || isNaN(employeeId)) res.send(JSON.stringify({ error: true, msg: 'Invalid parameter' }));
     const review = REVIEWS.find(e => e.id === reviewId);
     if (!review) return res.send(JSON.stringify({ error: true, msg: 'Review not found' }));
+    // If approver is not in the approvers list, access is denied
     const isApproverInList = review.approvers.includes(employeeId);
     if (!isApproverInList) return res.send(JSON.stringify({ error: true, msg: 'Access denied' }));
     res.send(JSON.stringify(review));

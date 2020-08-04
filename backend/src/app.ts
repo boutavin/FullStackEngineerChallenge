@@ -1,19 +1,20 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
+import express, { Application, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import EmployeesGetHandler from './api/employee/EmployeesGetHandler';
-import ReviewsGetHandler from './api/employee/ReviewsGetHandler';
 import EmployeeGetHandler from './api/employee/EmployeeGetHandler';
-import ReviewGetHandler from './api/employee/ReviewGetHandler';
-import EmployeeDeleteHandler from './api/employee/EmployeeDeleteHandler';
-import ReviewDeleteHandler from './api/employee/ReviewDeleteHandler';
 import EmployeePostHandler from './api/employee/EmployeePostHandler';
-import ReviewPostHandler from './api/employee/ReviewPostHandler';
-import ReviewFeedbackPostHandler from './api/employee/ReviewFeedbackPostHandler';
 import EmployeePatchHandler from './api/employee/EmployeePatchHandler';
-import ReviewPatchHandler from './api/employee/ReviewPatchHandler';
-import ReviewFeedbackGetHandler from './api/employee/ReviewFeedbackGetHandler';
+import EmployeeDeleteHandler from './api/employee/EmployeeDeleteHandler';
+import ReviewsGetHandler from './api/review/ReviewsGetHandler';
+import ReviewGetHandler from './api/review/ReviewGetHandler';
+import ReviewPostHandler from './api/review/ReviewPostHandler';
+import ReviewPatchHandler from './api/review/ReviewPatchHandler';
+import ReviewDeleteHandler from './api/review/ReviewDeleteHandler';
+import ReviewFeedbackGetHandler from './api/feedback/ReviewFeedbackGetHandler';
+import ReviewFeedbackPostHandler from './api/feedback/ReviewFeedbackPostHandler';
 
+// Use dotenv to store environment variables
 dotenv.config();
 
 const app: Application = express();
@@ -28,9 +29,6 @@ app.use((_, res, next) => {
     next();
 });
 
-app.get('/', (req: Request, res: Response) => {
-    res.send('TS App is Running');
-});
 app.get('/api/employees', EmployeesGetHandler);
 app.get('/api/employee/:id', EmployeeGetHandler);
 app.get('/api/employee/:id/reviews', ReviewsGetHandler);

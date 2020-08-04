@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import Button from '@material-ui/core/Button';
+import { Button, Grid } from '@material-ui/core';
 
 import { EmployeesRoute, EmployeeRoute } from '../routes';
 import useEmployees from '../common/useEmployees';
@@ -12,8 +12,10 @@ const Ul = styled.ul`
     flex-direction: column;
     list-style: none;
 `;
+
 function EmployeeList({ employees }: { employees: Employee[] }) {
     const items = employees.map((employee) => {
+        // Build employee buttons with proper url
         const to = EmployeeRoute.reverse({ id: employee.id.toString() }) || EmployeesRoute;
         return (
             <Button
@@ -22,6 +24,7 @@ function EmployeeList({ employees }: { employees: Employee[] }) {
                 color="primary"
                 component={Link}
                 to={to}
+                style={{ marginBottom: '1rem' }}
             >
                 {employee.name}
             </Button>
@@ -37,9 +40,11 @@ function EmployeeList({ employees }: { employees: Employee[] }) {
 export default function EmployeesView() {
     const [employees] = useEmployees();
     return (
-        <div>
-            <h1>Log as</h1>
-            <EmployeeList employees={employees} />
-        </div>
+        <Grid container={true} spacing={3}>
+            <Grid item={true} xs={4}>
+                <h1>Log as</h1>
+                <EmployeeList employees={employees} />
+            </Grid>
+        </Grid>
     );
 }

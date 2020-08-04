@@ -1,21 +1,41 @@
 import React from 'react';
 import styled from 'styled-components';
-import Button from '@material-ui/core/Button';
-import Select from '@material-ui/core/Select';
+import { Button, MenuItem, FormControl, Chip, Grid, Select } from '@material-ui/core';
+
 import AdminReviewSettingsProps from './AdminReviewSettingsProps';
-import { MenuItem, FormControl, Chip } from '@material-ui/core';
 import { FEEDBACK_TEXT } from '../../common/constants';
+import { FeedbackJSON } from '../../classes/Feedback';
+import Employee from '../../classes/Employee';
 
 const Settings = styled.div`
-  margin: 1rem;
-  padding: 1rem;
-  border: 1px solid red;
-  border-radius: 1rem;
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+    padding: 1rem;
+    border: 1px solid red;
+    border-radius: .5rem;
+    border: 2px solid #1976d2;
 `;
 
+function Feedbacks({ feedbacks, employees }: { feedbacks: FeedbackJSON[], employees: Employee[] }) {
+    if (!feedbacks.length) return null;
+    return (
+        <div>
+            <span><strong>Feedbacks</strong></span>
+            <ul>
+                {feedbacks.map(feedback => {
+                    const approver = employees.find(e => e.id === feedback.approver);
+                    return (
+                        <li key={feedback.id}>{approver?.name} {FEEDBACK_TEXT[feedback.option]}</li>
+                    );
+                })}
+            </ul>
+        </div>
+    );
+}
+
 export default function AdminReviewSettings({ review, employees, deleteReview, saveReview }: AdminReviewSettingsProps) {
+    // Use local values to not affect the actual review object
     const [localOwner, setLocalOwner] = React.useState<number>(review.owner);
     const [localApprovers, setLocalApprovers] = React.useState<number[]>(review.approvers || []);
     const { feedbacks } = review;
@@ -35,6 +55,8 @@ export default function AdminReviewSettings({ review, employees, deleteReview, s
     };
 
     const employeeOptions = employees.map(employee => <MenuItem value={employee.id} key={employee.id}>{employee.name}</MenuItem>);
+    // Filters the employees to exclude the owner of the review and the ones who already submitted a feedback.
+    // Could be done on the server side instead.
     const approverOptions = employees
         .filter(e => e.id !== localOwner && !feedbacks.find(f => f.approver === e.id))
         .map(employee => <MenuItem value={employee.id} key={employee.id}>{employee.name}</MenuItem>);
@@ -48,23 +70,6 @@ export default function AdminReviewSettings({ review, employees, deleteReview, s
             </div>
         );
     };
-
-    function Feedbacks() {
-        if (!feedbacks.length) return null;
-        return (
-            <div>
-                <span>Feedbacks</span>
-                <ul>
-                    {feedbacks.map(feedback => {
-                        const approver = employees.find(e => e.id === feedback.approver);
-                        return (
-                            <li key={feedback.id}>{approver?.name} {FEEDBACK_TEXT[feedback.option]}</li>
-                        );
-                    })}
-                </ul>
-            </div>
-        );
-    }
 
     function DeleteButton() {
         if (review.id < 0) return null;
@@ -81,8 +86,8 @@ export default function AdminReviewSettings({ review, employees, deleteReview, s
 
     return (
         <Settings>
-            <FormControl>
-                <span>Onwer</span>
+            <FormControl style={{ marginBottom: '1rem' }}>
+                <span><strong>Onwer</strong></span>
                 <Select
                     required={true}
                     defaultValue={localOwner}
@@ -93,8 +98,8 @@ export default function AdminReviewSettings({ review, employees, deleteReview, s
                 </Select>
             </FormControl>
 
-            <FormControl>
-                <span>Approvers</span>
+            <FormControl style={{ marginBottom: '1rem' }}>
+                <span><strong>Approvers</strong></span>
                 <Select
                     multiple={true}
                     value={localApprovers}
@@ -105,15 +110,18 @@ export default function AdminReviewSettings({ review, employees, deleteReview, s
                 </Select>
             </FormControl>
 
-            <Feedbacks />
-            <DeleteButton />
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={onSave}
-            >
-                Save
-            </Button>
+            <Feedbacks feedbacks={feedbacks} employees={employees} />
+
+            <Grid container={true} spacing={3} justify="space-around" style={{ marginTop: '1rem' }}>
+                <DeleteButton />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={onSave}
+                >
+                    Save
+                </Button>
+            </Grid>
         </Settings>
     );
 }

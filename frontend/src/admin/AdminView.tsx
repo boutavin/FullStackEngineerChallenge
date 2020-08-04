@@ -5,7 +5,6 @@ import {
     Switch
 } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
-// import styled from 'styled-components';
 
 import { AdminRoute, AdminEmployeesRoute, AdminReviewsRoute } from '../routes';
 import AdminEmployees from './employees/AdminEmployees';
@@ -21,7 +20,8 @@ export default function Admin() {
                 <AdminReviews />
             </Route>
             <Route exact={true} path={AdminRoute}>
-                <Button variant="outlined" color="secondary" component={Link} to={AdminEmployeesRoute}>
+                <h1>Admin</h1>
+                <Button variant="outlined" color="secondary" component={Link} to={AdminEmployeesRoute} style={{ marginRight: '1rem' }}>
                     Employees List
                 </Button>
                 <Button variant="outlined" color="primary" component={Link} to={AdminReviewsRoute}>

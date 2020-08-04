@@ -1,24 +1,34 @@
 import React from 'react';
-import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
+import styled from 'styled-components';
+import { Grid, Button } from '@material-ui/core';
 
 import { EmployeeFeedbackRoute, EmployeeRoute, EmployeesRoute } from '../routes';
 import useReviews from '../common/useReviews';
 import Employee from '../classes/Employee';
 import Review from '../classes/Review';
 
-
 const Li = styled.li`
-  margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #818479;
+    padding-bottom: .2rem;
 `;
 
-export default function ReviewToApprove({ employee, review }: { employee: Employee, review: Review }) {
+const Name = styled.span`
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+`;
+
+function ReviewToApprove({ employee, review }: { employee: Employee, review: Review }) {
     const to = EmployeeFeedbackRoute.reverse({ employeeId: employee.id.toString(), reviewId: review.id.toString() }) ||
         EmployeeRoute.reverse({ id: employee.id }) || EmployeesRoute;
     return (
         <Li>
-            <span>Review #{review.id}</span>
+            <Name>Review #{review.id}</Name>
 
             <Button
                 variant="contained"
@@ -35,12 +45,20 @@ export default function ReviewToApprove({ employee, review }: { employee: Employ
 export function ReviewsToApprove({ employee }: { employee: Employee; }) {
     const [reviews] = useReviews();
     const reviewsToApprove = reviews.filter(review => review.approvers.includes(employee.id));
-    return (
-        <div>
-            <h1>Reviews to approve</h1>
+    const Ul = () => {
+        if (!reviewsToApprove.length) return <div><i>None</i></div>;
+        return (
             <ul>
                 {reviewsToApprove.map(review => <ReviewToApprove key={review.id} employee={employee} review={review} />)}
             </ul>
-        </div>
+        );
+    };
+    return (
+        <Grid container={true} spacing={3}>
+            <Grid item={true} xs={4}>
+                <span><strong>Reviews to approve</strong></span>
+                <Ul />
+            </Grid>
+        </Grid>
     );
 }

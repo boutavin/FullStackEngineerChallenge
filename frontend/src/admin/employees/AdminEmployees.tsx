@@ -12,9 +12,8 @@ const Ul = styled.ul`
   list-style: none;
 `;
 
-// TODO remove
-const Debug = styled.pre`
-  margin-top: 2rem;
+const Title = styled.h1`
+  margin-right: 3rem;
 `;
 
 function EmployeeList({ employees, setEmployeeSettingsProxy }: {
@@ -35,6 +34,7 @@ export default function AdminEmployees() {
   const [employees, setEmployees] = useEmployees();
   const [employeeSettings, setEmployeeSettings] = useState<Employee>();
 
+  // Force refresh of the settings
   const setEmployeeSettingsProxy = (employee: Employee | undefined) => {
     setEmployeeSettings(undefined);
     setTimeout(() => {
@@ -50,55 +50,56 @@ export default function AdminEmployees() {
   }
 
   async function saveEmployee(id: number, name: string) {
+    // If id is -1 then add new employee otherwise update
     const { data } = (id < 0) ?
       await Api.addEmployee(name) :
       await Api.updateEmployee(id, name);
     if ((data as any).error) return console.log(data);
     setEmployees(data as Employee[]);
-    setEmployeeSettings(undefined); // TODO don't like that...
+    setEmployeeSettings(undefined);
   }
 
   async function addEmployee() {
+    // Provide a temporary new employee to the settings
     setEmployeeSettingsProxy(new Employee(-1, ''));
   }
 
-  // function saveEmployee(employee: Employee): void {
-  //   const newValue = [...employees, new Employee()];
-  //   setEmployees(newValue);
-  // }
+  function Settings({ employee }: { employee: Employee | undefined }) {
+    if (!employee) return null;
+    return (
+      <Grid item={true} xs={4}>
+        <AdminEmployeeSettings
+          employee={employeeSettings}
+          deleteEmployee={deleteEmployee}
+          saveEmployee={saveEmployee}
+        />
+      </Grid>
+    );
+  }
 
   return (
     <div>
-      <h1>Employees List</h1>
+      <Grid container={true} spacing={3}>
+        <Title>Employees List</Title>
+
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={addEmployee}
+          style={{ alignSelf: 'center' }}
+        >
+          Add employee
+        </Button>
+      </Grid>
 
       <Grid container={true} spacing={3}>
         <Grid item={true} xs={4}>
           <form noValidate={true} autoComplete="off">
             <EmployeeList employees={employees} setEmployeeSettingsProxy={setEmployeeSettingsProxy} />
           </form>
-
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={addEmployee}
-          >
-            Add employee
-          </Button>
         </Grid>
-        <Grid item={true} xs={8}>
-          <AdminEmployeeSettings
-            employee={employeeSettings}
-            deleteEmployee={deleteEmployee}
-            saveEmployee={saveEmployee}
-          />
-        </Grid>
+        <Settings employee={employeeSettings} />
       </Grid>
-
-      <Debug>
-        <code>
-          {JSON.stringify(employees, null, 4)}
-        </code>
-      </Debug>
     </div>
   );
 }
